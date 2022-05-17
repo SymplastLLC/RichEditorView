@@ -548,14 +548,15 @@ function selectText(containerid) {
 
 RE.prev = function() {
     console.log("prev")
-    fields = Array.from(document.getElementsByClassName("entryfield"))
+    var fields = Array.from(document.getElementsByClassName("entryfield"))
+    console.log(fields)
     if (fields.length == 0) {
         return
     }
     if (!RE.selectionOnEntryField) {
         selectText(fields[0].id)
     } else {
-        idx = fields.indexOf(RE.selectionParent)
+        var idx = fields.indexOf(RE.selectionParent)
         idx = idx == 0 ? (fields.length - 1) : idx - 1
         selectText(fields[idx].id)
     }
@@ -563,14 +564,15 @@ RE.prev = function() {
 
 RE.next = function() {
     console.log("next")
-    fields = Array.from(document.getElementsByClassName("entryfield"))
+    var fields = Array.from(document.getElementsByClassName("entryfield"))
+    console.log(fields)
     if (fields.length == 0) {
         return
     }
     if (!RE.selectionOnEntryField) {
         selectText(fields[0].id)
     } else {
-        idx = fields.indexOf(RE.selectionParent)
+        var idx = fields.indexOf(RE.selectionParent)
         idx = (idx + 1) % fields.length
         selectText(fields[idx].id)
     }
