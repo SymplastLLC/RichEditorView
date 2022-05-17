@@ -520,7 +520,7 @@ function selectText(containerid) {
     RE.backuprange();
     RE.selectionOnEntryField = true;
     RE.selectionParent = element
-}
+};
 
 RE.prev = function() {
     console.log("prev")
@@ -535,7 +535,7 @@ RE.prev = function() {
         idx = idx == 0 ? (fields.length - 1) : idx - 1
         selectText(fields[idx].id)
     }
-}
+};
 
 RE.next = function() {
     console.log("next")
@@ -550,7 +550,7 @@ RE.next = function() {
         idx = (idx + 1) % fields.length
         selectText(fields[idx].id)
     }
-}
+};
 
 window.onload = function() {
     RE.callback("ready");
