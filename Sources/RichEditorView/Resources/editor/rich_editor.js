@@ -100,6 +100,7 @@ RE.callback = function(method) {
 };
 
 RE.setHtml = function(contents) {
+    debugger
     var tempWrapper = document.createElement('div');
     tempWrapper.innerHTML = contents;
     var images = tempWrapper.querySelectorAll("img");
