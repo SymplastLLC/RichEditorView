@@ -535,7 +535,7 @@ function processFields() {
     var selectcounter = 0;
     var fields = document.getElementsByClassName("entryfield")
     for (var idx = 0; idx < fields.length; idx++) {
-       // fields[idx].id = "selectable" + idx;
+        fields[idx].id = "selectable" + idx;
     }
 }
 
