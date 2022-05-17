@@ -521,13 +521,21 @@ function focusOnEntry() {
     }
 }
 
+//function processFields() {
+//    var selectcounter = 0;
+//    $(".entryfield").each(function() {
+//        idja = "selectable" + selectcounter;
+//        $(this).attr('id', idja);
+//        selectcounter++;
+//    });
+//}
+
 function processFields() {
     var selectcounter = 0;
-    $(".entryfield").each(function() {
-        idja = "selectable" + selectcounter;
-        $(this).attr('id', idja);
-        selectcounter++;
-    });
+    var fields = document.getElementsByClassName("entryfield")
+    for (var idx = 0; idx < fields.length; idx++) {
+        fields[idx].id = "selectable" + idx;
+    }
 }
 
 function selectText(containerid) {
