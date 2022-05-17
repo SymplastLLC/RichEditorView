@@ -522,37 +522,12 @@ function focusOnEntry() {
     }
 }
 
-//function processFields() {
-//    var selectcounter = 0;
-//    $(".entryfield").each(function() {
-//        idja = "selectable" + selectcounter;
-//        $(this).attr('id', idja);
-//        selectcounter++;
-//    });
-//}
-
 function processFields() {
     var selectcounter = 0;
     var fields = document.getElementsByClassName("entryfield")
     for (var idx = 0; idx < fields.length; idx++) {
         fields[idx].id = "selectable" + idx;
     }
-}
-
-function selectText(containerid) {
-    console.log('selected ' + containerid)
-
-    var selection = window.getSelection();
-    selection.removeAllRanges();
-    var range = document.createRange();
-    let element = document.getElementById(containerid)
-    range.setStartBefore(element);
-    range.setEndAfter(element);
-    selection.removeAllRanges()
-    selection.addRange(range);
-    RE.backuprange();
-    RE.selectionOnEntryField = true;
-    RE.selectionParent = element
 }
 
 function selectTextByElement(container) {
