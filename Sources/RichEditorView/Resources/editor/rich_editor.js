@@ -20,6 +20,7 @@ var RE = {};
 RE.editor = document.getElementById('editor');
 RE.selectionOnEntryField = false;
 RE.selectionParent = undefined;
+RE.focusedEntry = 0;
 
 // Not universally supported, but seems to work in iOS 7 and 8
 document.addEventListener("selectionchange", function() {
@@ -279,6 +280,7 @@ RE.setBlockquote = function() {
 RE.insertHTML = function(html) {
     RE.restorerange();
     document.execCommand('insertHTML', false, html);
+    processFields()
 };
 
 RE.insertLink = function(url, text, title) {
@@ -506,6 +508,27 @@ RE.getRelativeCaretYPosition = function() {
     return y;
 };
 
+function focusOnEntry() {
+    fields = document.getElementsByClassName("entryfield");
+    field = fields[RE.focusedEntry];
+    if (field) {
+        RE.focusedEntry = (RE.focusedEntry + 1) % fields.length;
+        var rng = document.createRange();
+        rng.setStartBefore(field);
+        rng.setEndAfter(field);
+        RE.backuprange();
+    }
+}
+
+function processFields() {
+    var selectcounter = 0;
+    $(".entryfield").each(function() {
+        idja = "selectable" + selectcounter;
+        $(this).attr('id', idja);
+        selectcounter++;
+    });
+}
+
 function selectText(containerid) {
     console.log('selected ' + containerid)
 
@@ -520,7 +543,7 @@ function selectText(containerid) {
     RE.backuprange();
     RE.selectionOnEntryField = true;
     RE.selectionParent = element
-};
+}
 
 RE.prev = function() {
     console.log("prev")
