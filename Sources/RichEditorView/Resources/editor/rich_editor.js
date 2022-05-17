@@ -18,6 +18,8 @@
 var RE = {};
 
 RE.editor = document.getElementById('editor');
+RE.selectionOnEntryField = false;
+RE.selectionParent = undefined;
 
 // Not universally supported, but seems to work in iOS 7 and 8
 document.addEventListener("selectionchange", function() {
@@ -503,6 +505,52 @@ RE.getRelativeCaretYPosition = function() {
     }
     return y;
 };
+
+function selectText(containerid) {
+    console.log('selected ' + containerid)
+
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    var range = document.createRange();
+    let element = document.getElementById(containerid)
+    range.setStartBefore(element);
+    range.setEndAfter(element);
+    selection.removeAllRanges()
+    selection.addRange(range);
+    RE.backuprange();
+    RE.selectionOnEntryField = true;
+    RE.selectionParent = element
+}
+
+RE.prev = function() {
+    console.log("prev")
+    fields = Array.from(document.getElementsByClassName("entryfield"))
+    if (fields.length == 0) {
+        return
+    }
+    if (!RE.selectionOnEntryField) {
+        selectText(fields[0].id)
+    } else {
+        idx = fields.indexOf(RE.selectionParent)
+        idx = idx == 0 ? (fields.length - 1) : idx - 1
+        selectText(fields[idx].id)
+    }
+}
+
+RE.next = function() {
+    console.log("next")
+    fields = Array.from(document.getElementsByClassName("entryfield"))
+    if (fields.length == 0) {
+        return
+    }
+    if (!RE.selectionOnEntryField) {
+        selectText(fields[0].id)
+    } else {
+        idx = fields.indexOf(RE.selectionParent)
+        idx = (idx + 1) % fields.length
+        selectText(fields[idx].id)
+    }
+}
 
 window.onload = function() {
     RE.callback("ready");

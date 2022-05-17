@@ -349,6 +349,26 @@ public class RichEditorWebView: WKWebView {
         runJS("RE.setCheckbox('\(UUID().uuidString.prefix(8))')")
     }
     
+    public func restoreRange() {
+        runJS("RE.restorerange()")
+    }
+    
+    public func backupRange() {
+        runJS("RE.backuprange()")
+    }
+    
+    public func insertHTML(_ value: String) {
+        runJS("RE.insertHTML('\(value.escaped)')")
+    }
+    
+    public func next() {
+        runJS("RE.next();")
+    }
+    
+    public func prev() {
+        runJS("RE.prev();")
+    }
+    
     // Offline mode determines how to handle insertImage
     var offline = true
     
