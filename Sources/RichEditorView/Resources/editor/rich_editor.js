@@ -569,11 +569,11 @@ RE.prev = function() {
         return
     }
     if (!RE.selectionOnEntryField) {
-        selectText(fields[0].id)
+        selectTextByElement(fields[0])
     } else {
         var idx = fields.indexOf(RE.selectionParent)
         idx = idx == 0 ? (fields.length - 1) : idx - 1
-        selectText(fields[idx].id)
+        selectTextByElement(fields[idx])
     }
 };
 
@@ -585,11 +585,11 @@ RE.next = function() {
         return
     }
     if (!RE.selectionOnEntryField) {
-        selectText(fields[0].id)
+        selectTextByElement(fields[0])
     } else {
         var idx = fields.indexOf(RE.selectionParent)
         idx = (idx + 1) % fields.length
-        selectText(fields[idx].id)
+        selectTextByElement(fields[idx])
     }
 };
 
