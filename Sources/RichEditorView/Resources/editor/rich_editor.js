@@ -546,6 +546,21 @@ function selectText(containerid) {
     RE.selectionParent = element
 }
 
+function selectTextByElement(container) {
+    console.log('selected ' + container)
+
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    var range = document.createRange();
+    range.setStartBefore(container);
+    range.setEndAfter(container);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    RE.backuprange();
+    RE.selectionOnEntryField = true;
+    RE.selectionParent = container;
+}
+
 RE.prev = function() {
     console.log("prev")
     var fields = Array.from(document.getElementsByClassName("entryfield"))
