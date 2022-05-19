@@ -9,7 +9,7 @@ import UIKit
 import WebKit
 
 /// RichEditorDelegate defines callbacks for the delegate of the RichEditorView
-@objc public protocol RichEditorDelegate: class {
+@objc public protocol RichEditorDelegate: AnyObject {
     /// Called when the inner height of the text being displayed changes
     /// Can be used to update the UI
     @objc optional func richEditor(_ editor: RichEditorView, heightDidChange height: Int)
@@ -647,8 +647,12 @@ public class RichEditorWebView: WKWebView {
     /// If we are not already the first responder, focus the editor
     @objc private func viewWasTapped() {
         if !webView.isFirstResponder {
-            let point = tapRecognizer.location(in: webView)
-            focus(at: point)
+            if contentHTML.isEmpty {
+                focus()
+            } else {
+                let point = tapRecognizer.location(in: webView)
+                focus(at: point)
+            }
         }
     }
     override open func becomeFirstResponder() -> Bool {
