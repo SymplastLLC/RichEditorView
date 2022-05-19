@@ -651,12 +651,8 @@ public class RichEditorWebView: WKWebView {
     /// If we are not already the first responder, focus the editor
     @objc private func viewWasTapped() {
         if !webView.isFirstResponder {
-            if contentHTML.isEmpty {
-                focusOnEditor()
-            } else {
-                let point = tapRecognizer.location(in: webView)
-                focus(at: point)
-            }
+            let point = tapRecognizer.location(in: webView)
+            focus(at: point)
         }
     }
     override open func becomeFirstResponder() -> Bool {
