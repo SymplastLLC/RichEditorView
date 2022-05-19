@@ -521,7 +521,7 @@ RE.getRelativeCaretYPosition = function() {
     return y;
 };
 
-function focusOnEntry() {
+RE.focusOnEntry = function() {
     fields = document.getElementsByClassName("entryfield");
     field = fields[RE.focusedEntry];
     if (field) {
