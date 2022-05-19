@@ -648,7 +648,7 @@ public class RichEditorWebView: WKWebView {
     @objc private func viewWasTapped() {
         if !webView.isFirstResponder {
             if contentHTML.isEmpty {
-                focus()
+                webView.becomeFirstResponder()
             } else {
                 let point = tapRecognizer.location(in: webView)
                 focus(at: point)
