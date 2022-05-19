@@ -303,6 +303,17 @@ RE.insertLink = function(url, text, title) {
     RE.callback();
 };
 
+RE.focusEditor = function() {
+    // and ensures we move the cursor to the end of the editor
+    var range = document.createRange();
+    range.selectNodeContents(RE.editor.get(0));
+    range.collapse(false);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    RE.editor.focus();
+}
+
 RE.prepareInsert = function() {
     RE.backuprange();
 };

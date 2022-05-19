@@ -414,6 +414,10 @@ public class RichEditorWebView: WKWebView {
         runJS("RE.setCheckbox('\(UUID().uuidString.prefix(8))')")
     }
     
+    public func focusOnEditor() {
+        runJS("RE.focusEditor()")
+    }
+    
     // MARK: Table functionalities
     public func insertTable(width: Int = 2, height: Int = 2) {
         runJS("RE.prepareInsert()")
@@ -648,7 +652,7 @@ public class RichEditorWebView: WKWebView {
     @objc private func viewWasTapped() {
         if !webView.isFirstResponder {
             if contentHTML.isEmpty {
-                focus()
+                focusOnEditor()
             } else {
                 let point = tapRecognizer.location(in: webView)
                 focus(at: point)
