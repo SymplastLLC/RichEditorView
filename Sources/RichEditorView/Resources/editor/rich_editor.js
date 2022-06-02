@@ -590,7 +590,7 @@ RE.next = function() {
 };
 
 RE.handleClickOnEntryfield = function() {
-    var fields = document.document.querySelector(".entryfield");
+    var fields = document.querySelector(".entryfield");
     fields.forEach((element) => {
         element.addEventListener('click', (event) => {
             console.log(event.target);
