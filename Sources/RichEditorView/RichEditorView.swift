@@ -653,6 +653,10 @@ public class RichEditorWebView: WKWebView {
         if !webView.isFirstResponder {
             let point = tapRecognizer.location(in: webView)
             focus(at: point)
+            
+            getSelectedText { (text) in
+                print(text)
+            }
         }
     }
     override open func becomeFirstResponder() -> Bool {
