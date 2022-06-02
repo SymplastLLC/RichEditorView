@@ -564,11 +564,11 @@ RE.prev = function() {
         return
     }
     if (!RE.selectionOnEntryField) {
-        selectTextByElement(fields[0])
+        selectTextByElement(fields[0].id)
     } else {
         var idx = fields.indexOf(RE.selectionParent)
         idx = idx == 0 ? (fields.length - 1) : idx - 1
-        selectTextByElement(fields[idx])
+        selectTextByElement(fields[idx].id)
     }
 };
 
@@ -580,11 +580,11 @@ RE.next = function() {
         return
     }
     if (!RE.selectionOnEntryField) {
-        selectTextByElement(fields[0])
+        selectTextByElement(fields[0].id)
     } else {
         var idx = fields.indexOf(RE.selectionParent)
         idx = (idx + 1) % fields.length
-        selectTextByElement(fields[idx])
+        selectTextByElement(fields[idx].id)
     }
 };
 
