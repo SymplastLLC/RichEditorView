@@ -595,7 +595,7 @@ RE.handleClickOnEntryfield = function() {
         element.addEventListener('click', (event) => {
             console.log(event.target);
           });
-    };
+    })
 };
 
 window.onload = function() {
