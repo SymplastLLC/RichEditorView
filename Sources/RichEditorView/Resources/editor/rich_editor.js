@@ -554,7 +554,7 @@ function selectTextByElement(container) {
     RE.backuprange();
     RE.selectionOnEntryField = true;
     RE.selectionParent = container;
-    container.scrollIntoView();
+    container.scrollIntoView({block: "center", behavior: "smooth"});
     container.desiredInput.focus();
 }
 
