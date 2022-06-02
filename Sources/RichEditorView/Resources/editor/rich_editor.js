@@ -542,7 +542,6 @@ function processFields() {
 }
 
 function selectTextByElement(container) {
-    container.scrollIntoView();
     console.log('selected ' + container)
 
     var selection = window.getSelection();
@@ -555,6 +554,8 @@ function selectTextByElement(container) {
     RE.backuprange();
     RE.selectionOnEntryField = true;
     RE.selectionParent = container;
+    container.scrollIntoView();
+    container.desiredInput.focus();
 }
 
 RE.prev = function() {
