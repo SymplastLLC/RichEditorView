@@ -590,9 +590,12 @@ RE.next = function() {
 };
 
 RE.handleClickOnEntryfield = function() {
-    document.getElementById("entryfield").addEventListener('click', () => {
-      console.log("click on entryfield");
-    });
+    var fields = Array.from(document.getElementsByClassName("entryfield"))
+    fields.forEach((element) => {
+        element.addEventListener('click', () => {
+            console.log("click on entryfield");
+          });
+    };
 };
 
 window.onload = function() {
