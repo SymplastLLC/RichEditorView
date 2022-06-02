@@ -439,6 +439,10 @@ public class RichEditorWebView: WKWebView {
         runJS("RE.addRowToTable()")
     }
 
+    public func getElementAtPoint(_ point: CGPoint, handler: @escaping (String) -> Void) {
+        runJS("RE.getElementAtPoint(\(point.x), \(point.y)", handler: handler)
+    }
+    
     /// Runs some JavaScript on the WKWebView and returns the result
     /// If there is no result, returns an empty string
     /// - parameter js: The JavaScript string to be run
@@ -653,6 +657,9 @@ public class RichEditorWebView: WKWebView {
         if !webView.isFirstResponder {
             let point = tapRecognizer.location(in: webView)
             focus(at: point)
+            getElementAtPoint(point) { (element) in
+                print(element)
+            }
         }
     }
     override open func becomeFirstResponder() -> Bool {

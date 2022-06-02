@@ -589,6 +589,11 @@ RE.next = function() {
     }
 };
 
+RE.getElementAtPoint = function(x, y) {
+    var element = document.elementFromPoint(x, y);
+    return element;
+};
+
 window.onload = function() {
     RE.callback("ready");
 };
