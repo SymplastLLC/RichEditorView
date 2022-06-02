@@ -590,10 +590,10 @@ RE.next = function() {
 };
 
 RE.handleClickOnEntryfield = function() {
-    var fields = Array.from(document.getElementsByClassName("entryfield"))
+    var fields = document.document.querySelector(".entryfield");
     fields.forEach((element) => {
-        element.addEventListener('click', () => {
-            console.log("click on entryfield");
+        element.addEventListener('click', (event) => {
+            console.log(event.target);
           });
     };
 };
