@@ -593,9 +593,9 @@ RE.handleClickOnEntryfield = function() {
     var fields = document.querySelectorAll(".entryfield");
     fields.forEach((element) => {
         element.addEventListener('click', (event) => {
-            console.log(event.target);
-          });
-    })
+            selectTextByElement(event.target)
+        });
+    });
 };
 
 window.onload = function() {
