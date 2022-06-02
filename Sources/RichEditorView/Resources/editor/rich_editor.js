@@ -570,7 +570,7 @@ RE.prev = function() {
         idx = idx == 0 ? (fields.length - 1) : idx - 1
         selectTextByElement(fields[idx])
     }
-    RE.focusOnEntry();
+    focusOnEntry();
 };
 
 RE.next = function() {
@@ -587,7 +587,7 @@ RE.next = function() {
         idx = (idx + 1) % fields.length
         selectTextByElement(fields[idx])
     }
-    RE.focusOnEntry();
+    focusOnEntry();
 };
 
 window.onload = function() {
