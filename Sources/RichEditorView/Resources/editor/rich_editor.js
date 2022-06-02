@@ -564,12 +564,13 @@ RE.prev = function() {
         return
     }
     if (!RE.selectionOnEntryField) {
-        selectTextByElement(fields[0].id)
+        selectTextByElement(fields[0])
     } else {
         var idx = fields.indexOf(RE.selectionParent)
         idx = idx == 0 ? (fields.length - 1) : idx - 1
-        selectTextByElement(fields[idx].id)
+        selectTextByElement(fields[idx])
     }
+    RE.focusOnEntry();
 };
 
 RE.next = function() {
@@ -580,12 +581,13 @@ RE.next = function() {
         return
     }
     if (!RE.selectionOnEntryField) {
-        selectTextByElement(fields[0].id)
+        selectTextByElement(fields[0])
     } else {
         var idx = fields.indexOf(RE.selectionParent)
         idx = (idx + 1) % fields.length
-        selectTextByElement(fields[idx].id)
+        selectTextByElement(fields[idx])
     }
+    RE.focusOnEntry();
 };
 
 window.onload = function() {
