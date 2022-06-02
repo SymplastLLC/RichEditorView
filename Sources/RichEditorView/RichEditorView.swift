@@ -654,7 +654,7 @@ public class RichEditorWebView: WKWebView {
             let point = tapRecognizer.location(in: webView)
             focus(at: point)
             
-            getSelectedText { (text) in
+            getSelectedHref { (text) in
                 print(text)
             }
         }
