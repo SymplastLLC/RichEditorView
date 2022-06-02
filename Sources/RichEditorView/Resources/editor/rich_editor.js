@@ -589,9 +589,8 @@ RE.next = function() {
     }
 };
 
-RE.getElementAtPoint = function(x, y) {
-    var element = document.elementFromPoint(x, y);
-    return element;
+RE.handleClickOnEntryfield = function() {
+    document.getElementById("entryfield").onclick = function() { console.log("click on entryfield") };
 };
 
 window.onload = function() {
