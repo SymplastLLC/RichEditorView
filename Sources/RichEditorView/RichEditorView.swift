@@ -44,6 +44,18 @@ public class RichEditorWebView: WKWebView {
     public override var inputAccessoryView: UIView? {
         return accessoryView
     }
+    
+#if targetEnvironment(macCatalyst)
+    private var previousPasteTimestamp: TimeInterval = .zero
+    
+    public override func paste(_ sender: Any?) {
+        let currentPasteTimestamp = Date().timeIntervalSinceReferenceDate
+        // prevent double paste
+        guard currentPasteTimestamp - previousPasteTimestamp >= 0.2 else { return }
+        previousPasteTimestamp = currentPasteTimestamp
+        super.paste(sender)
+    }
+#endif
 }
 
 /// RichEditorView is a UIView that displays richly styled text, and allows it to be edited in a WYSIWYG fashion.
