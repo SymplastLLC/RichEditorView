@@ -582,7 +582,7 @@ public class RichEditorWebView: WKWebView {
     /// Scrolls the editor to a position where the caret is visible.
     /// Called repeatedly to make sure the caret is always visible when inputting text.
     /// Works only if the `lineHeight` of the editor is available.
-    private func scrollCaretToVisible() {
+    public func scrollCaretToVisible() {
         let scrollView = self.webView.scrollView
         
         getClientHeight(handler: { clientHeight in
