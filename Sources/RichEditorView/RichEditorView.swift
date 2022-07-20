@@ -642,7 +642,7 @@ public class RichEditorWebView: WKWebView {
             }
         }
         else if method.hasPrefix("htmlIsSet") {
-            delegate?.richEditorDidLoadHtml(self)
+            delegate?.richEditorDidLoadHtml?(self)
         }
         else if method.hasPrefix("updateHeight") {
             updateHeight()
