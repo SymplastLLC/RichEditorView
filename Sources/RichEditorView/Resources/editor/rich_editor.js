@@ -112,6 +112,7 @@ RE.setHtml = function(contents) {
     RE.editor.innerHTML = tempWrapper.innerHTML;
     RE.updatePlaceholder();
     processFields()
+    RE.callback("htmlIsSet")
 };
 
 RE.getHtml = function() {

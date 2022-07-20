@@ -27,6 +27,9 @@ import WebKit
     /// More concretely, is called when the internal WKWebView loads for the first time, and contentHTML is set
     @objc optional func richEditorDidLoad(_ editor: RichEditorView)
     
+    /// Called when the RichEditorView has loaded its content
+    @objc optional func richEditorDidLoadHtml(_ editor: RichEditorView)
+    
     /// Called when the internal WKWebView begins loading a URL that it does not know how to respond to
     /// For example, if there is an external link, and then the user taps it
     @objc optional func richEditor(_ editor: RichEditorView, shouldInteractWith url: URL) -> Bool
@@ -637,6 +640,9 @@ public class RichEditorWebView: WKWebView {
                 self.contentHTML = content
                 self.updateHeight()
             }
+        }
+        else if method.hasPrefix("htmlIsSet") {
+            delegate?.richEditorDidLoadHtml(self)
         }
         else if method.hasPrefix("updateHeight") {
             updateHeight()
