@@ -66,7 +66,7 @@ div {
     overflow: auto;
     display: block;
     font-size: 12pt;
-    caret-color: black !important;
+    caret-shape: bar;
 }
 
 input[type=checkbox] {
