@@ -43,10 +43,17 @@ import WebKit
 private let DefaultInnerLineHeight: Int = 28
 
 public class RichEditorWebView: WKWebView {
-    public var accessoryView: UIView?
-    public override var inputAccessoryView: UIView? {
-        return accessoryView
-    }
+    public lazy var accessoryView: RichEditorToolbar? = {
+        let view = RichEditorToolbar()
+        let options: [RichEditorDefaultOption] = [.undo, .redo,
+                                                  .bold, .italic, .underline,
+                                                  .checkbox, .subscript, .superscript, .strike,
+                                                  .header(1), .header(2), .header(3), .header(4), .header(5), .header(6),
+                                                  .indent, .outdent, .orderedList, .unorderedList,
+                                                  .alignLeft, .alignCenter, .alignRight]
+        view.options = options
+        return view
+    }()
     
 #if targetEnvironment(macCatalyst)
     private var previousPasteTimestamp: TimeInterval = .zero
@@ -68,7 +75,7 @@ public class RichEditorWebView: WKWebView {
     
     /// Input accessory view to display over they keyboard.
     /// Defaults to nil
-    open override var inputAccessoryView: UIView? {
+    open override var inputAccessoryView: RichEditorToolbar? {
         get { return webView.accessoryView }
         set { webView.accessoryView = newValue }
     }
@@ -155,18 +162,27 @@ public class RichEditorWebView: WKWebView {
         setup()
     }
     
+    open override func layoutSubviews() {
+        webView.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y + 44), size: CGSize(width: bounds.width, height: bounds.height - 44))
+        webView.accessoryView?.frame = CGRect(origin: bounds.origin, size: CGSize(width: bounds.width, height: 44))
+    }
+    
     private func setup() {
+        
+        if let view = webView.accessoryView {
+            addSubview(view)
+            view.editor = self
+        }
+        
         // configure webview
-        webView.frame = bounds
         webView.navigationDelegate = self
-        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         webView.configuration.dataDetectorTypes = WKDataDetectorTypes()
         
         webView.scrollView.isScrollEnabled = isScrollEnabled
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.bounces = false
         webView.scrollView.delegate = self
-        webView.scrollView.clipsToBounds = false
+        webView.scrollView.clipsToBounds = true
         addSubview(webView)
         
         if let filePath = Bundle.module.url(forResource: "rich_editor", withExtension: "html") {
