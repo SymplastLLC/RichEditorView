@@ -43,18 +43,7 @@ import WebKit
 private let DefaultInnerLineHeight: Int = 28
 
 public class RichEditorWebView: WKWebView {
-    public lazy var accessoryView: RichEditorToolbar? = {
-        let view = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: 0, height: 44))
-        view.autoresizingMask = .flexibleWidth
-        let options: [RichEditorDefaultOption] = [.undo, .redo,
-                                                  .bold, .italic, .underline,
-                                                  .checkbox, .subscript, .superscript, .strike,
-                                                  .header(1), .header(2), .header(3), .header(4), .header(5), .header(6),
-                                                  .indent, .outdent, .orderedList, .unorderedList,
-                                                  .alignLeft, .alignCenter, .alignRight]
-        view.options = options
-        return view
-    }()
+    public var accessoryView: UIView?
     
 #if targetEnvironment(macCatalyst)
     private var previousPasteTimestamp: TimeInterval = .zero
@@ -80,9 +69,18 @@ public class RichEditorWebView: WKWebView {
     
     /// Input accessory view to display over they keyboard.
     /// Defaults to nil
-    open override var inputAccessoryView: RichEditorToolbar? {
+    open override var inputAccessoryView: UIView? {
         get { return webView.accessoryView }
-        set { webView.accessoryView = newValue }
+        set {
+#if targetEnvironment(macCatalyst)
+            webView.accessoryView?.removeFromSuperview()
+            if let accessoryView = newValue {
+                addSubview(accessoryView)
+                setNeedsLayout()
+            }
+#endif
+            webView.accessoryView = newValue
+        }
     }
     
     /// The internal WKWebView that is used to display the text.
@@ -168,22 +166,15 @@ public class RichEditorWebView: WKWebView {
     }
     
     open override func layoutSubviews() {
-#if targetEnvironment(macCatalyst)
-        webView.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y), size: CGSize(width: bounds.width, height: bounds.height - 44))
-        webView.accessoryView?.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y + bounds.size.height - 44), size: CGSize(width: bounds.width, height: 44))
-#else
-        webView.frame = bounds
-#endif
+        if let view = webView.accessoryView {
+            webView.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y), size: CGSize(width: bounds.width, height: bounds.height - 44))
+            view.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y + bounds.size.height - 44), size: CGSize(width: bounds.width, height: 44))
+        } else {
+            webView.frame = bounds
+        }
     }
     
     private func setup() {
-        
-        if let view = webView.accessoryView {
-#if targetEnvironment(macCatalyst)
-            addSubview(view)
-#endif
-            view.editor = self
-        }
         
         // configure webview
         webView.navigationDelegate = self
