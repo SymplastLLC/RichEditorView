@@ -44,7 +44,8 @@ private let DefaultInnerLineHeight: Int = 28
 
 public class RichEditorWebView: WKWebView {
     public lazy var accessoryView: RichEditorToolbar? = {
-        let view = RichEditorToolbar()
+        let view = RichEditorToolbar(frame: CGRect(x: 0, y: 0, width: 0, height: 44))
+        view.autoresizingMask = .flexibleWidth
         let options: [RichEditorDefaultOption] = [.undo, .redo,
                                                   .bold, .italic, .underline,
                                                   .checkbox, .subscript, .superscript, .strike,
@@ -64,6 +65,10 @@ public class RichEditorWebView: WKWebView {
         guard currentPasteTimestamp - previousPasteTimestamp >= 0.2 else { return }
         previousPasteTimestamp = currentPasteTimestamp
         super.paste(sender)
+    }
+#else
+    public override var inputAccessoryView: UIView? {
+        return accessoryView
     }
 #endif
 }
@@ -163,14 +168,20 @@ public class RichEditorWebView: WKWebView {
     }
     
     open override func layoutSubviews() {
-        webView.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y + 44), size: CGSize(width: bounds.width, height: bounds.height - 44))
-        webView.accessoryView?.frame = CGRect(origin: bounds.origin, size: CGSize(width: bounds.width, height: 44))
+#if targetEnvironment(macCatalyst)
+        webView.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y), size: CGSize(width: bounds.width, height: bounds.height - 44))
+        webView.accessoryView?.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y + bounds.size.height - 44), size: CGSize(width: bounds.width, height: 44))
+#else
+        webView.frame = bounds
+#endif
     }
     
     private func setup() {
         
         if let view = webView.accessoryView {
+#if targetEnvironment(macCatalyst)
             addSubview(view)
+#endif
             view.editor = self
         }
         
