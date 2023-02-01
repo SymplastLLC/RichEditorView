@@ -27,7 +27,7 @@ html {
 body {
     min-height: 100%;
     overflow: auto;
-    font: -apple-system-body;
+    font-family: Roboto !important;
 }
 
 body, h1, p, ul, ol {
