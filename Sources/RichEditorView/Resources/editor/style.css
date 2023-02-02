@@ -27,7 +27,7 @@ html {
 body {
     min-height: 100%;
     overflow: auto;
-    font-family: Roboto !important;
+    font-family: "San Francisco", Arial !important;
 }
 
 body, h1, p, ul, ol {
