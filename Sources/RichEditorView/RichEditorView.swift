@@ -643,8 +643,10 @@ public class RichEditorWebView: WKWebView {
             // If loading for the first time, we have to set the content HTML to be displayed
             if !isEditorLoaded {
                 isEditorLoaded = true
-                setHTML(html)
-                contentHTML = html
+                if !html.isEmpty {
+                    setHTML(html)
+                    contentHTML = html
+                }
                 contentEditable = editingEnabledVar
                 placeholder = placeholderText
                 lineHeight = DefaultInnerLineHeight
