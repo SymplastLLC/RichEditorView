@@ -131,10 +131,13 @@ import UIKit
             if let image = option.image {
                 let button = RichBarButtonItem(image: image, handler: handler)
                 buttons.append(button)
-            } else {
+            } else if !option.title.isEmpty {
                 let title = option.title
                 let button = RichBarButtonItem(title: title, handler: handler)
                 buttons.append(button)
+            } else if option.isSpacer {
+                let spacerBtn = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+                buttons.append(spacerBtn)
             }
         }
         toolbar.items = buttons
@@ -154,7 +157,7 @@ import UIKit
         } else {
             toolbar.frame.size.width = width + barButtonItemMargin
         }
-        toolbar.frame.size.height = 44
+        toolbar.frame.size.height = bounds.height
         toolbarScroll.contentSize.width = width
     }
     

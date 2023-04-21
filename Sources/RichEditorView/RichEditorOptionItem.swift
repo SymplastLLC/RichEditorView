@@ -21,12 +21,16 @@ public protocol RichEditorOption {
     /// - parameter editor: The RichEditorToolbar that the RichEditorOption was being displayed in when tapped.
     ///                     Contains a reference to the `editor` RichEditorView to perform actions on.
     func action(_ editor: RichEditorToolbar)
+    
+    var isSpacer: Bool { get }
 }
 
 /// RichEditorOptionItem is a concrete implementation of RichEditorOption.
 /// It can be used as a configuration object for custom objects to be shown on a RichEditorToolbar.
 public struct RichEditorOptionItem: RichEditorOption {
-
+    
+    public var isSpacer: Bool
+    
     /// The image that should be shown when displayed in the RichEditorToolbar.
     public var image: UIImage?
 
@@ -36,10 +40,11 @@ public struct RichEditorOptionItem: RichEditorOption {
     /// The action to be performed when tapped
     public var handler: ((RichEditorToolbar) -> Void)
 
-    public init(image: UIImage?, title: String, action: @escaping ((RichEditorToolbar) -> Void)) {
+    public init(image: UIImage?, title: String, isSpacer: Bool = false, action: @escaping ((RichEditorToolbar) -> Void)) {
         self.image = image
         self.title = title
         self.handler = action
+        self.isSpacer = isSpacer
     }
     
     // MARK: RichEditorOption
@@ -76,10 +81,11 @@ public enum RichEditorDefaultOption: RichEditorOption {
     case video
     case link
     case table
+    case spacer
     
     public static let all: [RichEditorDefaultOption] = [
-        //.clear,
-        //.undo, .redo,
+        .clear,
+        .undo, .redo,
         .bold, .italic, .underline,
         .checkbox, .subscript, .superscript, .strike,
         .textColor, .textBackgroundColor,
@@ -89,12 +95,24 @@ public enum RichEditorDefaultOption: RichEditorOption {
     ]
 
     // MARK: RichEditorOption
+    public var isSpacer: Bool {
+        switch self {
+        case .spacer:
+            return true
+        default:
+            return false
+        }
+    }
+
+    
     public var image: UIImage? {
         var name = ""
         switch self {
         case .clear: name = "clear"
-        case .undo: name = "undo"
-        case .redo: name = "redo"
+        case .undo:
+            return UIImage(systemName: "arrow.uturn.backward")
+        case .redo:
+            return UIImage(systemName: "arrow.uturn.forward")
         case .bold: name = "bold"
         case .italic: name = "italic"
         case .underline: name = "underline"
@@ -116,6 +134,8 @@ public enum RichEditorDefaultOption: RichEditorOption {
         case .video: name = "insert_video"
         case .link: name = "insert_link"
         case .table: name = "insert_table"
+        case .spacer:
+            return nil
         }
         
         return UIImage(named: name, in: .module, compatibleWith: nil)
@@ -147,6 +167,7 @@ public enum RichEditorDefaultOption: RichEditorOption {
         case .video: return NSLocalizedString("Video", comment: "")
         case .link: return NSLocalizedString("Link", comment: "")
         case .table: return NSLocalizedString("Table", comment: "")
+        case .spacer: return ""
         }
     }
     
@@ -176,6 +197,8 @@ public enum RichEditorDefaultOption: RichEditorOption {
         case .video: toolbar.delegate?.richEditorToolbarInsertVideo?(toolbar)
         case .link: toolbar.delegate?.richEditorToolbarInsertLink?(toolbar)
         case .table: toolbar.delegate?.richEditorToolbarInsertTable?(toolbar)
+        case .spacer:
+            break
         }
     }
 }
