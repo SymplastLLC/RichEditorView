@@ -167,8 +167,8 @@ public class RichEditorWebView: WKWebView {
     
     open override func layoutSubviews() {
         if let view = webView.accessoryView {
-            webView.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y), size: CGSize(width: bounds.width, height: bounds.height - 44))
-            view.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y + bounds.size.height - 44), size: CGSize(width: bounds.width, height: 44))
+            webView.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y), size: CGSize(width: bounds.width, height: bounds.height - view.bounds.height))
+            view.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y + bounds.size.height - 44), size: CGSize(width: bounds.width, height: view.bounds.height))
         } else {
             webView.frame = bounds
         }
