@@ -38,9 +38,13 @@ import WebKit
     /// By default, this method is not used unless called by some custom JS that you add
     @objc optional func richEditor(_ editor: RichEditorView, handle action: String)
     
-    @objc optional func richEditorUndo(_ editor: RichEditorView)
+    @objc optional func richEditorDidUndo(_ editor: RichEditorView)
     
-    @objc optional func richEditorRedo(_ editor: RichEditorView)
+    @objc optional func richEditorDidRedo(_ editor: RichEditorView)
+    
+    @objc optional func richEditorWillUndo(_ editor: RichEditorView)
+    
+    @objc optional func richEditorWillRedo(_ editor: RichEditorView)
 }
 
 /// The value we hold in order to be able to set the line height before the JS completely loads.
@@ -301,16 +305,18 @@ public class RichEditorWebView: WKWebView {
     }
     
     public func undo() {
+        delegate?.richEditorWillUndo?(self)
         runJS("RE.undo()") { [weak self] _ in
             guard let self else { return }
-            self.delegate?.richEditorUndo?(self)
+            self.delegate?.richEditorDidUndo?(self)
         }
     }
     
     public func redo() {
+        delegate?.richEditorWillRedo?(self)
         runJS("RE.redo()") { [weak self] _ in
             guard let self else { return }
-            self.delegate?.richEditorRedo?(self)
+            self.delegate?.richEditorDidRedo?(self)
         }
     }
     
