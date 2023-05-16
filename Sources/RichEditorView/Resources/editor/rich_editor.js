@@ -21,10 +21,22 @@ RE.editor = document.getElementById('editor');
 RE.selectionOnEntryField = false;
 RE.selectionParent = undefined;
 RE.focusedEntry = 0;
+RE.menuSaving = false;
 
 // Not universally supported, but seems to work in iOS 7 and 8
-document.addEventListener("selectionchange", function() {
+document.addEventListener("selectionchange", (e) => {
+    if (!RE.menuSaving) {
+        RE.backuprange();
+    }
+});
+
+document.addEventListener("contextmenu", (e) => {
+    RE.menuSaving = true;
     RE.backuprange();
+    setTimeout(() => {
+        RE.restorerange();
+        RE.menuSaving = false;
+    }, 10);
 });
 
 //looks specifically for a Range selection and not a Caret selection
