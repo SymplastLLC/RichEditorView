@@ -7,6 +7,7 @@
 
 import UIKit
 import WebKit
+import GameController
 
 /// RichEditorDelegate defines callbacks for the delegate of the RichEditorView
 @objc public protocol RichEditorDelegate: AnyObject {
@@ -202,6 +203,24 @@ public class RichEditorWebView: WKWebView {
         tapRecognizer.addTarget(self, action: #selector(viewWasTapped))
         tapRecognizer.delegate = self
         addGestureRecognizer(tapRecognizer)
+        startObservingHardwareKeyboard()
+    }
+    
+    private func startObservingHardwareKeyboard() {
+        if #available(iOS 14.0, *) {
+            NotificationCenter.default.addObserver(self, selector: #selector(hardwareKeyboardDidConnect), name: .GCKeyboardDidConnect, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(hardwareKeyboardDidDisconnect), name: .GCKeyboardDidDisconnect, object: nil)
+        }
+    }
+    
+    @objc private func hardwareKeyboardDidConnect(_ notification: Notification) {
+        print("[Keyboard] Hardware keyboard did connect")
+        updateHeight()
+    }
+    
+    @objc private func hardwareKeyboardDidDisconnect(_ notification: Notification) {
+        print("[Keyboard] Hardware keyboard did disconnect")
+        updateHeight()
     }
     
     // MARK: - Rich Text Editing
