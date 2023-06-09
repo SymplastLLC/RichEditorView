@@ -130,6 +130,9 @@ public class RichEditorWebView: WKWebView {
             runJS("RE.setLineHeight('\(lineHeight)px')")
         }
     }
+
+    private let moveTimeInterval = TimeInterval(0.2)
+    private var lastMoveTime = Date()
     
     /// Whether or not the editor has finished loading or not yet.
     private var isEditorLoaded = false
@@ -222,6 +225,15 @@ public class RichEditorWebView: WKWebView {
         } else {
             handler(DefaultInnerLineHeight)
         }
+    }
+
+    private func isMoveTimeDelayPassed() -> Bool {
+        let currentDate = Date()
+        guard currentDate > lastMoveTime.addingTimeInterval(moveTimeInterval) else {
+            return false
+        }
+        lastMoveTime = currentDate
+        return true
     }
     
     private func setHTML(_ value: String) {
@@ -411,10 +423,12 @@ public class RichEditorWebView: WKWebView {
     }
     
     public func next() {
+        guard isMoveTimeDelayPassed() else { return }
         runJS("RE.next();")
     }
     
     public func prev() {
+        guard isMoveTimeDelayPassed() else { return }
         runJS("RE.prev();")
     }
     
@@ -574,6 +588,17 @@ public class RichEditorWebView: WKWebView {
     /// Since the internal web view also has gesture recognizers, we have to make sure that we actually receive our taps.
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
+    }
+
+    open override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        guard let key = presses.first?.key else { return }
+        switch key.keyCode {
+        case .keyboardDownArrow, .keyboardUpArrow, .keyboardLeftArrow, .keyboardRightArrow:
+            guard isMoveTimeDelayPassed() else { return }
+        default:
+            break
+        }
+        super.pressesBegan(presses, with: event)
     }
     
     // MARK: - Private Implementation Details
