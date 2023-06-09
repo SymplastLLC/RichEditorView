@@ -228,12 +228,16 @@ public class RichEditorWebView: WKWebView {
     }
 
     private func isMoveTimeDelayPassed() -> Bool {
+#if targetEnvironment(macCatalyst)
         let currentDate = Date()
         guard currentDate > lastMoveTime.addingTimeInterval(moveTimeInterval) else {
             return false
         }
         lastMoveTime = currentDate
         return true
+#else
+        return true
+#endif    
     }
     
     private func setHTML(_ value: String) {
