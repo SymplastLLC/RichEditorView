@@ -594,6 +594,7 @@ public class RichEditorWebView: WKWebView {
         return true
     }
 
+#if targetEnvironment(macCatalyst)
     open override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         guard let key = presses.first?.key else { return }
         switch key.keyCode {
@@ -604,6 +605,7 @@ public class RichEditorWebView: WKWebView {
         }
         super.pressesBegan(presses, with: event)
     }
+#endif
     
     // MARK: - Private Implementation Details
     
