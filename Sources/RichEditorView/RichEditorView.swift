@@ -45,6 +45,8 @@ import WebKit
     @objc optional func richEditorWillUndo(_ editor: RichEditorView)
     
     @objc optional func richEditorWillRedo(_ editor: RichEditorView)
+    
+    @objc optional func richEditorWasRestarted(_ editor: RichEditorView)
 }
 
 /// The value we hold in order to be able to set the line height before the JS completely loads.
@@ -198,13 +200,17 @@ public class RichEditorWebView: WKWebView {
         webView.scrollView.clipsToBounds = true
         addSubview(webView)
         
-        if let filePath = Bundle.module.url(forResource: "rich_editor", withExtension: "html") {
-            webView.loadFileURL(filePath, allowingReadAccessTo: filePath.deletingLastPathComponent())
-        }
+        loadHtmlFile()
         
         tapRecognizer.addTarget(self, action: #selector(viewWasTapped))
         tapRecognizer.delegate = self
         addGestureRecognizer(tapRecognizer)
+    }
+    
+    private func loadHtmlFile() {
+        if let filePath = Bundle.module.url(forResource: "rich_editor", withExtension: "html") {
+            webView.loadFileURL(filePath, allowingReadAccessTo: filePath.deletingLastPathComponent())
+        }
     }
     
     // MARK: - Rich Text Editing
@@ -757,5 +763,22 @@ public class RichEditorWebView: WKWebView {
     open override func resignFirstResponder() -> Bool {
         blur()
         return true
+    }
+    
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        // Need to revisit this solution:
+        // - check why the process is terminated
+        // - check if the loading of the html/js file can be
+        // tracked instead of adding an arbitrary delay
+        delegate?.richEditorWasRestarted?(self)
+        loadHtmlFile()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.webView.reload()
+            if self.html.count > self.contentHTML.count {
+                self.setHTML(self.html)
+            } else {
+                self.setHTML(self.contentHTML)
+            }
+        }
     }
 }
