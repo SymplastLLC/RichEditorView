@@ -766,6 +766,10 @@ public class RichEditorWebView: WKWebView {
     }
     
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        // Need to revisit this solution:
+        // - check why the process is terminated
+        // - check if the loading of the html/js file can be
+        // tracked instead of adding an arbitrary delay
         delegate?.richEditorWasRestarted?(self)
         loadHtmlFile()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
