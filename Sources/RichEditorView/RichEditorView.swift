@@ -45,6 +45,12 @@ import WebKit
     @objc optional func richEditorWillUndo(_ editor: RichEditorView)
     
     @objc optional func richEditorWillRedo(_ editor: RichEditorView)
+
+    /// Called when the WebKit process is terminated by the OS
+    @objc optional func richEditorWasTerminated(_ editor: RichEditorView)
+    
+    /// Called after attempting to reload the Editor when the OS terminated its process
+    @objc optional func richEditor(_ editor: RichEditorView, didRestartSuccessfully: Bool)
 }
 
 /// The value we hold in order to be able to set the line height before the JS completely loads.
@@ -198,13 +204,17 @@ public class RichEditorWebView: WKWebView {
         webView.scrollView.clipsToBounds = true
         addSubview(webView)
         
-        if let filePath = Bundle.module.url(forResource: "rich_editor", withExtension: "html") {
-            webView.loadFileURL(filePath, allowingReadAccessTo: filePath.deletingLastPathComponent())
-        }
+        loadHtmlFile()
         
         tapRecognizer.addTarget(self, action: #selector(viewWasTapped))
         tapRecognizer.delegate = self
         addGestureRecognizer(tapRecognizer)
+    }
+    
+    private func loadHtmlFile() {
+        if let filePath = Bundle.module.url(forResource: "rich_editor", withExtension: "html") {
+            webView.loadFileURL(filePath, allowingReadAccessTo: filePath.deletingLastPathComponent())
+        }
     }
     
     // MARK: - Rich Text Editing
@@ -757,5 +767,34 @@ public class RichEditorWebView: WKWebView {
     open override func resignFirstResponder() -> Bool {
         blur()
         return true
+    }
+    
+    /// Check every 100ms if the JS is loaded. If after 'retries' times the JS is no loaded
+    /// returns false otherwise returns true.
+    private func waitForJSToLoad(retries: Int = 10) async -> Bool {
+        guard retries > 0 else { return false }
+        do {
+            try await webView.evaluateJavaScript("RE.getHtml()")
+            return true
+        } catch {
+            try? await Task.sleep(nanoseconds: 100000000)
+            return await waitForJSToLoad(retries: retries - 1)
+        }
+    }
+    
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        delegate?.richEditorWasTerminated?(self)
+        loadHtmlFile()
+        
+        Task {
+            let success = await waitForJSToLoad()
+            delegate?.richEditor?(self, didRestartSuccessfully: success)
+            webView.reload()
+            if html.count > contentHTML.count {
+                setHTML(html)
+            } else {
+                setHTML(contentHTML)
+            }
+        }
     }
 }
