@@ -7,6 +7,7 @@
 
 import UIKit
 import WebKit
+import KVKLogger
 
 /// RichEditorDelegate defines callbacks for the delegate of the RichEditorView
 @objc public protocol RichEditorDelegate: AnyObject {
@@ -174,20 +175,31 @@ public class RichEditorWebView: WKWebView {
         webView = RichEditorWebView()
         super.init(frame: frame)
         setup()
+        KVKLogger.shared.configure()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         webView = RichEditorWebView()
         super.init(coder: aDecoder)
         setup()
+        KVKLogger.shared.configure()
     }
+    
+    var webViewFrame: CGRect?
+    var accessoryViewFrame: CGRect?
     
     open override func layoutSubviews() {
         if let view = webView.accessoryView {
             webView.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y), size: CGSize(width: bounds.width, height: bounds.height - view.bounds.height))
             view.frame = CGRect(origin: CGPoint(x: bounds.origin.x, y: bounds.origin.y + bounds.size.height - view.bounds.height), size: CGSize(width: bounds.width, height: view.bounds.height))
+            if webViewFrame != webView.frame || accessoryViewFrame != view.frame {
+                webViewFrame = webView.frame
+                accessoryViewFrame = view.frame
+                KVKLogger.shared.log("WV: \(String(describing: webViewFrame)), AV: \(String(describing: accessoryViewFrame))")
+            }
         } else {
             webView.frame = bounds
+            KVKLogger.shared.log("No accessory view! WV: \(webView.frame)")
         }
     }
     
