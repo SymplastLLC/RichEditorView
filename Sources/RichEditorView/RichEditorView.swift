@@ -789,7 +789,6 @@ public class RichEditorWebView: WKWebView {
         Task {
             let success = await waitForJSToLoad()
             delegate?.richEditor?(self, didRestartSuccessfully: success)
-            webView.reload()
             if html.count > contentHTML.count {
                 setHTML(html)
             } else {
