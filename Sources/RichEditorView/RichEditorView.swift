@@ -7,6 +7,7 @@
 
 import UIKit
 import WebKit
+import UniformTypeIdentifiers
 
 /// RichEditorDelegate defines callbacks for the delegate of the RichEditorView
 @objc public protocol RichEditorDelegate: AnyObject {
