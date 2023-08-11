@@ -67,7 +67,27 @@ public class RichEditorWebView: WKWebView {
         // prevent double paste
         guard currentPasteTimestamp - previousPasteTimestamp >= 0.2 else { return }
         previousPasteTimestamp = currentPasteTimestamp
+        convertPasteboardIfNeeded()
         super.paste(sender)
+    }
+    
+    private func convertPasteboardIfNeeded() {
+        if UIPasteboard.general.contains(pasteboardTypes: ["com.apple.notes.richtext"]),
+            let rtfData = UIPasteboard.general.data(forPasteboardType: "public.rtf") {
+            do {
+                let rtfOptions = [NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.rtf]
+                let attributedStringWithRtf = try NSAttributedString(data: rtfData, options: rtfOptions, documentAttributes: nil)
+                if let htmlString = attributedStringWithRtf.toHtml() {
+                    if #available(macCatalyst 14.0, *) {
+                        UIPasteboard.general.setValue(htmlString, forPasteboardType: UTType.html.identifier)
+                    } else {
+                        UIPasteboard.general.setValue(htmlString, forPasteboardType: kUTTypeHTML as String)
+                    }
+                }
+            } catch {
+                print(error)
+            }
+        }
     }
 #else
     public override var inputAccessoryView: UIView? {
