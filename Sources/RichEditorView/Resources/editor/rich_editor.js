@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- "use strict";
+"use strict";
 
 var RE = {};
 
@@ -616,6 +616,15 @@ RE.handleClickOnEntryfield = function() {
     });
 };
 
-window.onload = function() {
+window.onload = function () {
+    if (isMacOS()) {
+        RE.editor.setAttribute("spellcheck", false);
+    }
     RE.callback("ready");
 };
+
+function isMacOS() {
+    let userAgent = window.navigator.userAgent.toLowerCase();
+    let macosPlatforms = /(macintosh|macintel|macppc|mac68k|macos)/i;
+    return macosPlatforms.test(userAgent);
+}
