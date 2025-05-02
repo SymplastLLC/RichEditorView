@@ -517,16 +517,40 @@ RE.getRelativeCaretYPosition = function() {
     var sel = window.getSelection();
     if (sel.rangeCount) {
         var range = sel.getRangeAt(0);
-        var needsWorkAround = (range.startOffset == 0)
-        /* Removing fixes bug when node name other than 'div' */
-        // && range.startContainer.nodeName.toLowerCase() == 'div');
-        if (needsWorkAround) {
-            y = range.startContainer.offsetTop - window.pageYOffset;
+        
+        // Check if we're inside a table
+        var isInTable = false;
+        var node = range.startContainer;
+        while (node && node !== RE.editor) {
+            if (node.nodeName === 'TD' || node.nodeName === 'TH' || node.nodeName === 'TABLE') {
+                isInTable = true;
+                break;
+            }
+            node = node.parentNode;
+        }
+        
+        if (isInTable) {
+            // For tables, use element-based approach instead of range
+            if (range.startContainer.nodeType === Node.TEXT_NODE) {
+                node = range.startContainer.parentNode;
+            } else {
+                node = range.startContainer;
+            }
+            var rect = node.getBoundingClientRect();
+            y = rect.top;
         } else {
-            if (range.getClientRects) {
-                var rects = range.getClientRects();
-                if (rects.length > 0) {
-                    y = rects[0].top;
+            // Regular case - use existing logic
+            var needsWorkAround = (range.startOffset == 0);
+            /* Removing fixes bug when node name other than 'div' */
+            // && range.startContainer.nodeName.toLowerCase() == 'div');
+            if (needsWorkAround) {
+                y = range.startContainer.offsetTop - window.pageYOffset;
+            } else {
+                if (range.getClientRects) {
+                    var rects = range.getClientRects();
+                    if (rects.length > 0) {
+                        y = rects[0].top;
+                    }
                 }
             }
         }
