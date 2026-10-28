@@ -69,6 +69,19 @@ div {
     caret-shape: bar;
 }
 
+/* Opt-in auto-height mode (RichEditorView.autoHeight): the document sizes to its content instead
+   of the viewport, so the measured height does not feed back from the frame the host gives the view. */
+.auto-height, .auto-height body {
+    height: auto;
+    min-height: 0;
+}
+
+.auto-height #editor {
+    min-height: 0;
+    height: auto;
+    display: flow-root;
+}
+
 input[type=checkbox] {
     transform: scale(1.4);
     margin-right: 9px;
