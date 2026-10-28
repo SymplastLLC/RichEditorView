@@ -89,6 +89,28 @@ RE.updateHeight = function() {
     RE.callback("updateHeight");
 }
 
+// Opt-in auto-height mode: the document sizes to its content, and any resize of the editor
+// (re-wrap after a width change, new content, loaded images) reports a new height.
+RE.autoHeightObserver = null;
+
+RE.setAutoHeight = function(enabled) {
+    document.documentElement.classList.toggle("auto-height", !!enabled);
+    if (RE.autoHeightObserver) {
+        RE.autoHeightObserver.disconnect();
+        RE.autoHeightObserver = null;
+    }
+    if (enabled && typeof ResizeObserver !== "undefined") {
+        RE.autoHeightObserver = new ResizeObserver(function() {
+            RE.updateHeight();
+        });
+        RE.autoHeightObserver.observe(RE.editor);
+    }
+};
+
+RE.getContentHeight = function() {
+    return Math.ceil(RE.editor.getBoundingClientRect().height);
+};
+
 RE.callbackQueue = [];
 RE.runCallbackQueue = function() {
     if (RE.callbackQueue.length === 0) {
