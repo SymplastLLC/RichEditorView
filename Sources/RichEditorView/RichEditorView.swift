@@ -132,6 +132,17 @@ public class RichEditorWebView: WKWebView {
     open var editingEnabled: Bool = false {
         didSet { contentEditable = editingEnabled }
     }
+
+    /// Whether the reported `editorHeight` is the height of the content rather than of the viewport.
+    /// When enabled, the document sizes to its content and the height is re-measured whenever the
+    /// editor resizes (for example after the text re-wraps to a new width). Defaults to false.
+    open var autoHeight: Bool = false {
+        didSet {
+            guard isEditorLoaded, autoHeight != oldValue else { return }
+            runJS("RE.setAutoHeight(\(autoHeight))")
+            updateHeight()
+        }
+    }
     
     private let tapRecognizer = UITapGestureRecognizer()
     
@@ -670,8 +681,11 @@ public class RichEditorWebView: WKWebView {
     }
     
     private func updateHeight() {
-        runJS("document.getElementById('editor').clientHeight") { heightString in
-            let height = Int(heightString) ?? 0
+        // The content height is returned as a string: `runJS` would read a number of 0 or 1 as a Bool.
+        let heightJS = autoHeight ? "String(RE.getContentHeight())" : "document.getElementById('editor').clientHeight"
+        runJS(heightJS) { heightString in
+            // A failed measurement comes back as "" (or a non-integer); keep the last known height.
+            guard let height = Int(heightString) else { return }
             if self.editorHeight != height {
                 self.editorHeight = height
             }
@@ -718,6 +732,10 @@ public class RichEditorWebView: WKWebView {
     /// - parameter method: String with the name of the method and optional parameters that were passed in
     private func performCommand(_ method: String) {
         if method.hasPrefix("ready") {
+            // Re-applied every time `ready` fires, not only on the first load
+            if autoHeight {
+                runJS("RE.setAutoHeight(true)")
+            }
             // If loading for the first time, we have to set the content HTML to be displayed
             if !isEditorLoaded {
                 isEditorLoaded = true
